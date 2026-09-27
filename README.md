@@ -1,5 +1,6 @@
 🤖 AI Interview Platform
 An AI-powered interview preparation platform that analyzes resumes, conducts personalized interviews, provides AI-generated feedback, and creates customized learning roadmaps using a microservices architecture.
+
 🛠️ Tech Stack
 - Frontend: React.js, TypeScript
 - Backend: Node.js, Express.js
