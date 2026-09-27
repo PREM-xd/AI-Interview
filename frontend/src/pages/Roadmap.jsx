@@ -4,7 +4,7 @@ import { FiCheck, FiChevronDown, FiClock, FiFileText, FiSend, FiX, FiZap } from 
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { BsRocketTakeoff } from "react-icons/bs";
-import { useCoins } from '../apis/user.api'
+import { deductCoins } from '../apis/user.api'
 import api from '../utils/axios'
 import { useSelector } from 'react-redux'
 import { useEffect } from 'react'
@@ -62,7 +62,7 @@ function Roadmap({ user, setUser }) {
         setError("");
         try {
             try {
-                const coinResponse = await useCoins({ coins: 20, action: "roadmap-builder" })
+                const coinResponse = await deductCoins({ coins: 20, action: "roadmap-builder" })
                 setUser((prev) => ({
                     ...prev, interviewCoin: coinResponse?.interviewCoin,
                 }))

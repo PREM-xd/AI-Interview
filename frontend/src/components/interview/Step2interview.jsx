@@ -208,6 +208,11 @@ const navigate = useNavigate()
 
     const res = await submitAnswer({ interviewId: interviewData.interviewId, answer:finalAnswer})
 
+    if (!res) {
+      setLoading(false);
+      return;
+    }
+
     if(res.completed){
        setFeedback(res.feedback);
         await new Promise((r) => setTimeout(r, 700));
@@ -250,6 +255,11 @@ const navigate = useNavigate()
     setLoading(true)
 
     const res = await submitAnswer({ interviewId: interviewData.interviewId, answer})
+
+    if (!res) {
+      setLoading(false);
+      return;
+    }
 
     if(res.completed){
        setFeedback(res.feedback);

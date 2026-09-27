@@ -8,10 +8,41 @@ import extractText from "../config/pdf.js";
 import Resume from "../models/resume.model.js";
 import fs from "fs"
 
+const normaliseList = (value) => {
+    if (typeof value === "string") {
+        try {
+            const parsed = JSON.parse(value)
+            value = parsed
+        } catch {
+            return value ? [value] : []
+        }
+    }
+
+    if (!Array.isArray(value)) return []
+
+    return value.map((item) => (
+        typeof item === "string" ? item : JSON.stringify(item)
+    ))
+}
+
+const normaliseResumeData = (data) => ({
+    ...data,
+    education: normaliseList(data.education),
+    skills: normaliseList(data.skills),
+    projects: normaliseList(data.projects),
+    experience: normaliseList(data.experience),
+    strengths: normaliseList(data.strengths),
+    weaknesses: normaliseList(data.weaknesses),
+    missingSkills: normaliseList(data.missingSkills),
+    recommendations: normaliseList(data.recommendations),
+})
+
 
 export const uploadResume = async (req,res) => {
+    let file;
+
     try {
-        const file = req.file;
+        file = req.file;
         if(!file){
             return res.status(400).json({
                 success:false,
@@ -31,7 +62,7 @@ export const uploadResume = async (req,res) => {
 
         const aiResponse = await resumeAgent(resumeText)
 
-        const resumeData = JSON.parse(aiResponse)
+        const resumeData = normaliseResumeData(JSON.parse(aiResponse))
 
         let resume = await Resume.findOne({userId})
 
@@ -53,7 +84,7 @@ export const uploadResume = async (req,res) => {
 
         await redis.set(`resume:${userId}`,JSON.stringify(resume));
 
-        await fs.unlinkSync(file.path);
+        fs.unlinkSync(file.path);
 
         return res.status(200).json({
             success:true,
@@ -65,8 +96,8 @@ export const uploadResume = async (req,res) => {
     } catch (error) {
         console.log(error)
 
-        if(file){
-            await fs.unlinkSync(file.path);
+        if(file && fs.existsSync(file.path)){
+            fs.unlinkSync(file.path);
         }
         return res.status(500).json({
             success:false,

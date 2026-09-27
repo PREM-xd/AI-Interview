@@ -15,6 +15,10 @@ function InterviewPage({user , setUser}) {
         const fetchInterview = async () => {
             const response = await getInterview(id)
             const data = response?.interview
+            if (!data) {
+                setLoading(false)
+                return
+            }
             if(data.status === "completed"){
                 navigate(`/interview/${id}/report`,
                     {replace: true});

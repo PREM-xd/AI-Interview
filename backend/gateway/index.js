@@ -9,7 +9,6 @@ import { getCurrentUser } from "./controllers/user.controller.js"
 import { isAuth } from "./middleware/isAuth.js"
 import { proxyWithHeaders } from "./utils/proxyWithHeaders.js"
 const app = express()
-app.use(express.json())
 
 app.use(cors({
     origin:process.env.FRONTEND_URL,
@@ -33,6 +32,8 @@ app.use("/api/roadmap",isAuth ,proxyWithHeaders(process.env.ROADMAP_SERVICE_URL)
 app.use("/api/billing",isAuth ,proxyWithHeaders(process.env.BILLING_SERVICE_URL))
 app.get("/api/me",isAuth,getCurrentUser)
 
+// Keep request bodies available to the proxy; services parse their own JSON/multipart bodies.
+app.use(express.json())
 
 
 

@@ -7,7 +7,7 @@ import api from '../utils/axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { setResume } from '../redux/resumeSlice'
 import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts"
-import { useCoins } from '../apis/user.api'
+import { deductCoins } from '../apis/user.api'
 const ScoreRing = ({ score }) => {
     const color = score >= 75 ? "#7c3aed" : score >= 50 ? "#f59e0b" : "#ef4444";
     return (
@@ -84,12 +84,13 @@ function Scorer({ user, setUser }) {
     const uploadResume = async () => {
         if (!file) {
             alert("Please select a PDF")
+            return
         }
         try {
             setLoading(true)
 
             try {
-                const coinResponse = await useCoins({ coins: 10, action: "resume-scorer" })
+                const coinResponse = await deductCoins({ coins: 10, action: "resume-scorer" })
                 setUser((prev) => ({
                     ...prev, interviewCoin: coinResponse?.interviewCoin,
                 }))

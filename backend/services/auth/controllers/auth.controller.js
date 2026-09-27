@@ -12,6 +12,8 @@ export const login = async (req, res) => {
 
   try {
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     const { token } = req.body;
 
     const decoded = await getAuth(app).verifyIdToken(token);
@@ -53,8 +55,8 @@ export const login = async (req, res) => {
 
     res.cookie( "session", sessionId,{
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
         maxAge:1000 * 60 * 60 * 24 * 7,
       }
     );
@@ -72,6 +74,8 @@ console.log(error)
 export const logout = async (req, res) => {
   try {
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     const sessionId = req.cookies?.session;
 
     if (sessionId) {
@@ -80,8 +84,8 @@ export const logout = async (req, res) => {
 
     res.clearCookie("session", {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
     });
 
     return res.json({

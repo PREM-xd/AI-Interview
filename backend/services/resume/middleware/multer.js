@@ -1,6 +1,7 @@
 import fs from "fs"
+import path from "path"
 import multer from "multer"
-const uploadPath = "./uploads"
+const uploadPath = path.resolve(process.cwd(), "uploads")
 
 if(!fs.existsSync(uploadPath)){
 fs.mkdirSync(uploadPath)

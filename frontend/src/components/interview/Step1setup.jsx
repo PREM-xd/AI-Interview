@@ -4,7 +4,7 @@ import { FiArrowLeft, FiArrowRight, FiBriefcase, FiCheck, FiCheckCircle, FiFileT
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useCoins } from '../../apis/user.api'
+import { deductCoins } from '../../apis/user.api'
 import api from '../../utils/axios'
 import { setResume } from '../../redux/resumeSlice'
 import { startInterview } from '../../apis/interview.api'
@@ -22,12 +22,13 @@ function Step1setup({ user, setUser }) {
     const uploadResume = async () => {
         if (!file) {
             alert("Please select a PDF")
+            return
         }
         try {
             setUploading(true)
             try {
                 
-            const coinResponse = await useCoins({ coins: 10, action: "resume-scorer" })
+            const coinResponse = await deductCoins({ coins: 10, action: "resume-scorer" })
 
             setUser((prev) => ({
                 ...prev, interviewCoin: coinResponse?.interviewCoin,
@@ -55,13 +56,21 @@ function Step1setup({ user, setUser }) {
     }
 
     const start = async () => {
+        if (!role.trim() || starting) return
+
         setStarting(true)
-        const response = await startInterview({ role, type, useResume, resume })
+        const response = await startInterview({ role: role.trim(), type, useResume, resume })
+
+        if(!response?.interviewId){
+            setStarting(false)
+            alert(response?.message || "Failed to start interview.")
+            return
+        }
 
         if(response){
             try {
                 
-            const coinResponse = await useCoins({ coins: 50, action: "start-interview" })
+            const coinResponse = await deductCoins({ coins: 50, action: "start-interview" })
 
             setUser((prev) => ({
                 ...prev, interviewCoin: coinResponse?.interviewCoin,
