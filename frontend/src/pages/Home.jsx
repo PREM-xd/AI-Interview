@@ -5,7 +5,7 @@ import { FaArrowRight } from "react-icons/fa6";
 import LoginModel from '../components/LoginModel';
 import { useState } from 'react';
 import dashboard from "../assets/image.png"
-import { FiMic, FiFileText, FiBarChart2, FiMap } from "react-icons/fi";
+import { FiMic, FiFileText, FiBarChart2 } from "react-icons/fi";
 function Home({ setUser }) {
     const [showLogin, setShowLogin] = useState(false)
     return (
@@ -120,8 +120,7 @@ function Home({ setUser }) {
                         <p className='text-black/40 text-sm max-w-2xl mx-auto mt-4 leading-relaxed'>
                             Fresher.AI combines multiple AI agents that work together
                             to help you build your resume, practice interviews,
-                            receive detailed feedback, and follow a personalized roadmap
-                            to land your dream job.
+                            receive detailed feedback, and prepare confidently for your next interview.
                         </p>
                     </div>
                     <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-4'>
@@ -129,8 +128,8 @@ function Home({ setUser }) {
                             [
                                 {
                                     icon: <FiFileText />,
-                                    title: "Resume Agent",
-                                    desc: "Create ATS-friendly resumes, improve profile strength and maximize interview opportunities.",
+                                    title: "Resume Analyzer",
+                                    desc: "Analyze your resume, improve profile strength, and maximize interview opportunities.",
                                 },
                                 {
                                     icon: <FiMic />,
@@ -141,11 +140,6 @@ function Home({ setUser }) {
                                     icon: <FiBarChart2 />,
                                     title: "Feedback Agent",
                                     desc: "Get detailed answer analysis, scoring reports and improvement recommendations.",
-                                },
-                                {
-                                    icon: <FiMap />,
-                                    title: "Roadmap Agent",
-                                    desc: "Generate personalized learning roadmaps based on goals, skills and performance.",
                                 },
                             ].map((agent, i) => (
                                 <motion.div

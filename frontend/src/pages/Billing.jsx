@@ -17,9 +17,8 @@ const plan = [
         disabled: true,
         features: [
             "150 Interview Coins",
-            "Resume Builder",
-            "Resume Scorer",
-            "Roadmap Generator",
+            "Resume Analyzer",
+            "AI Interviews",
         ],
     },
     {
@@ -31,8 +30,8 @@ const plan = [
         disabled: false,
         features: [
             "300 Interview Coins",
-            "Unlimited Resume Score",
-            "Unlimited Roadmaps",
+            "Unlimited Resume Analysis",
+            "Priority AI Interviews",
             "Priority AI Response",
         ],
     },
@@ -139,9 +138,7 @@ function Billing({ user, setUser }) {
 
                                 <div className='relative mt-3.5 space-y-1.5'>
                                     {[
-                                        { title: "Resume Builder", coin: "-10" },
-                                        { title: "Resume Scorer", coin: "-10" },
-                                        { title: "Roadmap Generator", coin: "-20" },
+                                        { title: "Resume Analysis", coin: "-10" },
                                         { title: "AI Interview", coin: "-50" },
                                     ].map((item) => (
                                         <div key={item.title} className='flex items-center justify-between rounded-lg bg-white/5 border border-white/8 px-2.5 py-1.5'>
@@ -161,8 +158,7 @@ function Billing({ user, setUser }) {
                                     <p className="text-[10px] leading-4 text-violet-300">
                                         Every AI feature uses Interview Coins.
                                         Buy more coins anytime to continue using
-                                        Resume Builder, Resume Scorer,
-                                        AI Interview and Roadmap Generator.
+                                        Resume Analysis and AI Interview.
                                     </p>
 
                                 </div>
@@ -182,7 +178,7 @@ function Billing({ user, setUser }) {
                         Interview Coins
                     </h1>
                     <p className="mt-2 text-sm text-black/45">
-                        Use coins for Resume Scoring, Resume Builder, AI Interviews, and Roadmap Generation.
+                        Use coins for Resume Analysis and AI Interviews.
                     </p>
                 </div>
 

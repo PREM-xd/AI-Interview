@@ -2,7 +2,6 @@ import React from 'react'
 import { Routes , Route, Navigate } from 'react-router-dom'
 import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
-import { use } from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { getCurrentUser } from './apis/user.api'
@@ -10,12 +9,13 @@ import Scorer from './pages/Scorer'
 import { getResume } from './apis/resume.api'
 import { useDispatch } from 'react-redux'
 import { setResume } from './redux/resumeSlice'
-import ResumeBuilder from './pages/ResumeBuilder'
 import InterviewStart from './pages/InterviewStart'
 import InterviewPage from './pages/InterviewPage'
 import InterviewReport from './pages/InterviewReport'
-import Roadmap from './pages/Roadmap'
 import Billing from './pages/Billing'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from './utils/firebase'
+import api from './utils/axios'
 
 function App() {
   const [user,setUser]= useState(null)
@@ -26,9 +26,28 @@ function App() {
   useEffect(()=>{
 
     const getUser = async () => {
-      const data = await getCurrentUser()
-      setUser(data?.user)
-      setLoading(false)
+      try {
+        const firebaseUser = await new Promise((resolve) => {
+          const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            unsubscribe()
+            resolve(currentUser)
+          })
+        })
+
+        if (firebaseUser) {
+          const token = await firebaseUser.getIdToken()
+          const response = await api.post("/api/auth/login", { token })
+          setUser(response?.data?.user)
+        } else {
+          const data = await getCurrentUser()
+          setUser(data?.user)
+        }
+      } catch (error) {
+        console.error("Authentication failed", error)
+        setUser(null)
+      } finally {
+        setLoading(false)
+      }
     }
 
     getUser()
@@ -38,13 +57,15 @@ function App() {
   useEffect(()=>{
 
     const getResumeData = async()=>{
+      if (!user) return
+
       const result = await getResume()
       dispatch(setResume(result?.data))
     }
 
     getResumeData()
 
-  },[])
+  },[user, dispatch])
 
 
   if(loading){
@@ -71,10 +92,6 @@ function App() {
       user ? <Scorer user={user} setUser={setUser}/> 
       : <Navigate to="/" replace/> }/>
 
-      <Route path='/resume' element={
-      user ? <ResumeBuilder user={user} setUser={setUser}/> 
-      : <Navigate to="/" replace/> }/>
-
       <Route path='/interview' element={
       user ? <InterviewStart user={user} setUser={setUser}/> 
       : <Navigate to="/" replace/> }/>
@@ -85,10 +102,6 @@ function App() {
 
       <Route path='/interview/:id/report' element={
       user ? <InterviewReport user={user} setUser={setUser}/> 
-      : <Navigate to="/" replace/> }/>
-
-      <Route path='/roadmap' element={
-      user ? <Roadmap user={user} setUser={setUser}/> 
       : <Navigate to="/" replace/> }/>
 
       <Route path='/billing' element={

@@ -1,27 +1,16 @@
 import React from 'react'
 import { AnimatePresence, motion } from "motion/react"
 import { GiArtificialHive, GiTwoCoins } from 'react-icons/gi'
-import { FiFileText, FiLogOut, FiMap, FiPlus, FiSidebar, FiStar } from 'react-icons/fi'
+import { FiLogOut, FiPlus, FiSidebar, FiStar } from 'react-icons/fi'
 import { useNavigate } from "react-router-dom"
 import { FaCirclePlus } from "react-icons/fa6";
 
 const NAV_ITEMS = [
     {
-        icon: <FiFileText size={15} />,
-        label: "Resume Builder",
-        path: "/resume",
-    },
-    {
         icon: <FiStar size={15} />,
         label: "Resume Scorer",
         path: "/scorer",
     },
-    {
-        icon: <FiMap size={15} />,
-        label: "Roadmap Builder",
-        path: "/roadmap",
-    },
-
 
 ];
 

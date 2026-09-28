@@ -2,22 +2,22 @@ import React from 'react'
 import { FiX } from "react-icons/fi";
 import { motion } from "motion/react"
 import { FcGoogle } from "react-icons/fc";
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithRedirect } from 'firebase/auth';
 import { auth, provider } from '../utils/firebase';
-import api from '../utils/axios';
+import { useState } from 'react';
 function LoginModel({ onClose ,setUser}) {
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
 
     const handleGoogleAuth = async () => {
         try {
-            const result = await signInWithPopup(auth , provider)
-            const token = await result.user.getIdToken()
-
-            const response = await api.post("/api/auth/login" , {token})
-          
-            setUser(response?.data?.user)
-            onClose()
+            setError("")
+            setLoading(true)
+            await signInWithRedirect(auth, provider)
         } catch (error) {
             console.log(error)
+            setLoading(false)
+            setError(error?.message || "Google sign-in failed.")
         }
     }
 
@@ -51,17 +51,19 @@ function LoginModel({ onClose ,setUser}) {
                     <div className='mt-7'>
                         <motion.button
                         onClick={handleGoogleAuth}
+                            disabled={loading}
                             whileHover={{ scale: 1.04 }}
                             whileTap={{ scale: 0.97 }}
                             className='w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-white/15 bg-white/10 backdrop-blur-md hover:border-white/25 hover:bg-white/[0.14] shadow-inner transition-all'
                         >
                             <FcGoogle size={18}/>
                             <span className='text-white font-medium text-sm'>
-                                Continue with Google
+                                {loading ? "Redirecting to Google..." : "Continue with Google"}
                             </span>
 
 
                         </motion.button>
+                        {error && <p className='mt-3 text-center text-xs text-red-300'>{error}</p>}
                     </div>
                 </div>
 
