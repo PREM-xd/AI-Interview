@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import { useState } from 'react'
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getCurrentUser } from './apis/user.api'
 import Scorer from './pages/Scorer'
 import { getResume } from './apis/resume.api'
@@ -21,6 +22,7 @@ function App() {
   const [user,setUser]= useState(null)
   const [loading , setLoading] = useState(true)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
 
   useEffect(()=>{
@@ -38,6 +40,11 @@ function App() {
           const token = await firebaseUser.getIdToken()
           const response = await api.post("/api/auth/login", { token })
           setUser(response?.data?.user)
+
+          if (sessionStorage.getItem("freshai-login-pending") === "true") {
+            sessionStorage.removeItem("freshai-login-pending")
+            navigate("/dashboard", { replace: true })
+          }
         } else {
           const data = await getCurrentUser()
           setUser(data?.user)
@@ -80,9 +87,7 @@ function App() {
    <>
 
    <Routes>
-    <Route path='/' element={
-      user ? <Navigate to="/dashboard" replace/> : <Home setUser={setUser}/>
-      }/>
+    <Route path='/' element={<Home setUser={setUser}/>} />
 
     <Route path='/dashboard' element={
       user ? <Dashboard user={user} setUser={setUser}/> 

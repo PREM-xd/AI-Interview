@@ -20,7 +20,7 @@ const navigate = useNavigate()
   const [timerActive, setTimerActive] = useState(true); // paused once the answer is submitted
 
   // UI toggles
-  const [micOn, setMicOn] = useState(true); // user's manual preference — only changed by the mic button
+  const [micOn, setMicOn] = useState(false); // microphone starts after an explicit user gesture
   const [cameraOn, setCameraOn] = useState(false);
   const [codeOpen, setCodeOpen] = useState(false);
 
@@ -30,12 +30,18 @@ const navigate = useNavigate()
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [voiceGender, setVoiceGender] = useState("female");
   const [introSpoken, setIntroSpoken] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [speechError, setSpeechError] = useState("");
+  const [interimTranscript, setInterimTranscript] = useState("");
 
   // Refs
   const aiVideoRef = useRef(null);
   const userVideoRef = useRef(null);
   const recognitionRef = useRef(null);
   const streamRef = useRef(null);
+  const micOnRef = useRef(false);
+  const isAIPlayingRef = useRef(false);
+  const committedAnswerRef = useRef("");
 
 
   const videoSource = voiceGender === "female" ? femaleVideo : maleVideo
@@ -45,33 +51,97 @@ const navigate = useNavigate()
   // Speech recognition
 
   useEffect(()=>{
-    if(!("webkitSpeechRecognition" in window))return;
-    const rec = new window.webkitSpeechRecognition()
-     rec.lang = "en-US";
-    rec.continuous = true;
-    rec.interimResults = false;
-    rec.onresult = (e)=>{
-      const t = e.results[e.results.length - 1][0].transcript;
-      setAnswer((prev)=>prev + " "+ t)
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SpeechRecognition){
+      setSpeechError("Speech-to-text is not supported in this browser.");
+      return;
     }
+
+    const rec = new SpeechRecognition();
+    rec.lang = "en-US";
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.onresult = (e)=>{
+      let finalTranscript = "";
+      let interim = "";
+      for (let index = e.resultIndex; index < e.results.length; index += 1) {
+        const transcript = e.results[index][0].transcript;
+        if (e.results[index].isFinal) finalTranscript += transcript;
+        else interim += transcript;
+      }
+
+      if (finalTranscript.trim()) {
+        committedAnswerRef.current = `${committedAnswerRef.current} ${finalTranscript}`.trim();
+      }
+      setInterimTranscript(interim.trim());
+      setAnswer(`${committedAnswerRef.current}${interim.trim() ? ` ${interim.trim()}` : ""}`.trim());
+      setSpeechError("");
+    }
+    rec.onstart = () => {
+      setIsListening(true);
+      setSpeechError("");
+    };
+    rec.onerror = (event) => {
+      setIsListening(false);
+      if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+        setSpeechError("Microphone permission is required for speech-to-text.");
+      } else if (event.error !== "aborted") {
+        setSpeechError("Speech recognition stopped. Try the microphone again.");
+      }
+    };
+    rec.onend = () => {
+      setIsListening(false);
+      if (micOnRef.current && !isAIPlayingRef.current) {
+        try {
+          rec.start();
+        } catch {
+          // The browser may still be closing the previous recognition session.
+        }
+      }
+    };
     recognitionRef.current = rec
+
+    return () => {
+      micOnRef.current = false;
+      rec.onend = null;
+      rec.stop();
+      recognitionRef.current = null;
+    };
   },[])
 
 
   const startMic = ()=>{
-    recognitionRef.current?.start()
+    if (!recognitionRef.current) return;
+    setSpeechError("");
+    try {
+      recognitionRef.current.start();
+    } catch (error) {
+      if (error.name !== "InvalidStateError") {
+        setSpeechError("Could not start speech recognition. Try again.");
+      }
+    }
   }
   const stopMic = ()=>{
-    recognitionRef.current?.stop()
+    try {
+      recognitionRef.current?.stop()
+    } catch {
+      // Recognition may already be stopped by the browser.
+    }
+    setInterimTranscript("");
+    setIsListening(false);
   }
 
   const toggleMic = ()=>{
     if(micOn){
+      micOnRef.current = false;
       stopMic()
     }else{
-      startMic()
+      // Start immediately inside the click handler so the browser preserves user activation.
+      micOnRef.current = true;
+      setMicOn(true);
+      startMic();
     }
-    setMicOn(!micOn)
+    if (micOn) setMicOn(false)
   }
 
   const toggleCamera =async ()=>{
@@ -141,13 +211,15 @@ const navigate = useNavigate()
         utter.volume = 1;
         utter.onstart=()=>{
           setIsAIPlaying(true)
+          isAIPlayingRef.current = true;
           stopMic()
           aiVideoRef.current?.play()
         }
         utter.onend=()=>{
           aiVideoRef.current?.pause()
           setIsAIPlaying(false)
-          if(micOn) startMic()
+          isAIPlayingRef.current = false;
+          if(micOnRef.current) startMic()
             setTimeout(()=>{ setSubtitle("");resolve() },300)
         }
         setSubtitle(text)
@@ -235,6 +307,8 @@ const navigate = useNavigate()
       setQuestion(res.question);
       setCurrentIndex(res.currentQuestion);
       setAnswer("");
+      committedAnswerRef.current = "";
+      setInterimTranscript("");
       setFeedback(null);
 
 
@@ -283,6 +357,8 @@ const navigate = useNavigate()
       setQuestion(res.question);
       setCurrentIndex(res.currentQuestion);
       setAnswer("");
+      committedAnswerRef.current = "";
+      setInterimTranscript("");
       setFeedback(null);
 
   }
@@ -417,6 +493,10 @@ const navigate = useNavigate()
             <div className='min-h-[14px] flex items-center justify-center'>
               {micOn && isAIPlaying && (
                 <span className="text-[10px] text-red-400/80">Mic paused — AI is speaking</span>)}
+              {!isAIPlaying && isListening && (
+                <span className="text-[10px] text-emerald-400/80">Listening... speak your answer</span>)}
+              {speechError && !isAIPlaying && (
+                <span className="text-center text-[10px] text-red-400/80">{speechError}</span>)}
             </div>
 
             <span className="text-[10px] text-white/35 text-center">
@@ -479,12 +559,18 @@ const navigate = useNavigate()
           <div className='flex-1 flex flex-col min-h-0'>
             <label className='text-xs font-medium text-zinc-400 mb-1.5'>Your Answer</label>
             <textarea
-            onChange={(e)=>setAnswer(e.target.value)}
+            onChange={(e)=>{
+              committedAnswerRef.current = e.target.value;
+              setAnswer(e.target.value)
+            }}
             value={answer}
             rows={5}
             onKeyDown={(e)=>{if(e.ctrlKey && e.key === "Enter") submit()}}
             placeholder='Write your answer here… or speak if mic is on'
              className='flex-1 w-full rounded-xl bg-[#17181E] border border-white/8 p-4 text-sm text-white outline-none resize-none focus:border-white/25 transition placeholder-white/20'/>
+            {interimTranscript && (
+              <p className='mt-1 text-[10px] text-emerald-300/70'>Hearing: {interimTranscript}</p>
+            )}
           </div>
 
           <div className='mt-3 min-h-[0px]'>

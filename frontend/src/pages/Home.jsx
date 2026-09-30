@@ -6,10 +6,13 @@ import LoginModel from '../components/LoginModel';
 import { useState } from 'react';
 import dashboard from "../assets/image.png"
 import { FiMic, FiFileText, FiBarChart2 } from "react-icons/fi";
+import HomepageIntro from "../components/HomepageIntro";
 function Home({ setUser }) {
     const [showLogin, setShowLogin] = useState(false)
     return (
-        <div className='bg-white text-[#0A0A0A] font-sans min-h-screen overflow-x-hidden'>
+        <>
+            <HomepageIntro />
+            <div className='bg-white text-[#0A0A0A] font-sans min-h-screen overflow-x-hidden'>
 
             {/* navbar */}
 
@@ -186,7 +189,8 @@ function Home({ setUser }) {
                 </footer>
 
 
-        </div>
+            </div>
+        </>
     )
 }
 

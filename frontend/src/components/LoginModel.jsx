@@ -13,9 +13,11 @@ function LoginModel({ onClose ,setUser}) {
         try {
             setError("")
             setLoading(true)
+            sessionStorage.setItem("freshai-login-pending", "true")
             await signInWithRedirect(auth, provider)
         } catch (error) {
             console.log(error)
+            sessionStorage.removeItem("freshai-login-pending")
             setLoading(false)
             setError(error?.message || "Google sign-in failed.")
         }
