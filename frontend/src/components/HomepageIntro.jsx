@@ -9,10 +9,14 @@ const INTRO_STEPS = [
 
 function HomepageIntro() {
     const [step, setStep] = useState(0)
-    const [visible, setVisible] = useState(true)
+    const [visible, setVisible] = useState(() => (
+        typeof window !== "undefined" && sessionStorage.getItem("freshai-intro-seen") !== "true"
+    ))
     const [reducedMotion, setReducedMotion] = useState(false)
 
     useEffect(() => {
+        if (!visible) return undefined
+
         const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
         setReducedMotion(mediaQuery.matches)
 
@@ -20,13 +24,16 @@ function HomepageIntro() {
         mediaQuery.addEventListener?.("change", handlePreferenceChange)
 
         if (mediaQuery.matches) {
-            setStep(4)
+            sessionStorage.setItem("freshai-intro-seen", "true")
             setVisible(false)
         } else {
             const timers = INTRO_STEPS.map(({ at, step: nextStep }) => (
                 window.setTimeout(() => setStep(nextStep), at)
             ))
-            const exitTimer = window.setTimeout(() => setVisible(false), 3950)
+            const exitTimer = window.setTimeout(() => {
+                sessionStorage.setItem("freshai-intro-seen", "true")
+                setVisible(false)
+            }, 3950)
 
             return () => {
                 timers.forEach((timer) => window.clearTimeout(timer))

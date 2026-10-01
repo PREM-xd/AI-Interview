@@ -17,6 +17,7 @@ app.use(cors({
 
 app.use(morgan("dev"))
 app.use(cookieParser())
+app.use(express.json())
 
 const PORT = process.env.PORT || 6000
 
@@ -31,8 +32,6 @@ app.use("/api/interview",isAuth ,proxyWithHeaders(process.env.INTERVIEW_SERVICE_
 app.use("/api/billing",isAuth ,proxyWithHeaders(process.env.BILLING_SERVICE_URL))
 app.get("/api/me",isAuth,getCurrentUser)
 
-// Keep request bodies available to the proxy; services parse their own JSON/multipart bodies.
-app.use(express.json())
 
 
 

@@ -16,7 +16,7 @@ function Step3report({ report, user, setUser }) {
         <div className='border-b border-white/10 px-8 py-6 flex items-center justify-between'>
 
           <div>
-            <div onClick={() => navigate("/dashboard")} className='inline-flex items-center gap-2 text-white rounded-full border border-black/20 bg-black px-3 py-1.5 cursor-pointer'>
+            <div onClick={() => navigate("/")} className='inline-flex items-center gap-2 text-white rounded-full border border-black/20 bg-black px-3 py-1.5 cursor-pointer'>
               <FiArrowLeft size={14} />
               <span className='text-xs text-zinc-100'>Back</span>
 

@@ -65,7 +65,7 @@ function Billing({ user, setUser }) {
                         }))
 
                         alert("Payment Successful 🎉")
-                        navigate("/dashboard")
+                        navigate("/")
 
                     } catch (error) {
                         console.log(error);

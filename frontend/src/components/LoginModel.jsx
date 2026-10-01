@@ -2,8 +2,9 @@ import React from 'react'
 import { FiX } from "react-icons/fi";
 import { motion } from "motion/react"
 import { FcGoogle } from "react-icons/fc";
-import { signInWithRedirect } from 'firebase/auth';
+import { signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../utils/firebase';
+import api from '../utils/axios';
 import { useState } from 'react';
 function LoginModel({ onClose ,setUser}) {
     const [error, setError] = useState("")
@@ -14,7 +15,19 @@ function LoginModel({ onClose ,setUser}) {
             setError("")
             setLoading(true)
             sessionStorage.setItem("freshai-login-pending", "true")
-            await signInWithRedirect(auth, provider)
+            const result = await signInWithPopup(auth, provider)
+            const token = await result.user.getIdToken()
+            const response = await api.post("/api/auth/login", { token })
+            const authenticatedUser = response?.data?.user
+
+            if (!authenticatedUser) {
+                throw new Error("The auth service did not return a user")
+            }
+
+            setUser(authenticatedUser)
+            sessionStorage.removeItem("freshai-login-pending")
+            sessionStorage.removeItem("freshai-login-pending-path")
+            onClose()
         } catch (error) {
             console.log(error)
             sessionStorage.removeItem("freshai-login-pending")

@@ -1,193 +1,150 @@
-import React from 'react'
+import React from "react"
 import { motion } from "motion/react"
-import { GiArtificialHive } from "react-icons/gi";
-import { FaArrowRight } from "react-icons/fa6";
-import LoginModel from '../components/LoginModel';
-import { useState } from 'react';
-import dashboard from "../assets/image.png"
-import { FiMic, FiFileText, FiBarChart2 } from "react-icons/fi";
-import HomepageIntro from "../components/HomepageIntro";
-function Home({ setUser }) {
-    const [showLogin, setShowLogin] = useState(false)
+import { FaArrowRight } from "react-icons/fa6"
+import { FiArrowUpRight, FiBarChart2, FiFileText, FiLogOut, FiMic, FiPlus, FiStar } from "react-icons/fi"
+import { GiArtificialHive, GiTwoCoins } from "react-icons/gi"
+import { useNavigate } from "react-router-dom"
+import { signOut } from "firebase/auth"
+import { auth } from "../utils/firebase"
+import api from "../utils/axios"
+import HomepageFeatureCards from "../components/HomepageFeatureCards"
+import HomepageIntro from "../components/HomepageIntro"
+
+function Home({ user, setUser }) {
+    const navigate = useNavigate()
+
+    const openFeature = (path) => {
+        if (user) {
+            navigate(path)
+            return
+        }
+
+        sessionStorage.setItem("freshai-login-pending", "true")
+        sessionStorage.setItem("freshai-login-pending-path", path)
+        navigate("/login")
+    }
+
+    const openLogin = () => {
+        sessionStorage.setItem("freshai-login-pending", "true")
+        sessionStorage.setItem("freshai-login-pending-path", "/")
+        navigate("/login")
+    }
+
+    const handleLogout = async () => {
+        try {
+            await api.get("/api/auth/logout")
+            await signOut(auth)
+            setUser(null)
+            navigate("/", { replace: true })
+        } catch (error) {
+            console.error("Logout failed", error)
+        }
+    }
+
     return (
         <>
             <HomepageIntro />
-            <div className='bg-white text-[#0A0A0A] font-sans min-h-screen overflow-x-hidden'>
-
-            {/* navbar */}
-
-            <motion.nav
-                initial={{ y: -60, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className='fixed top-0 left-0 right-0 z-50 h-[52px] flex items-center justify-between px-5 bg-white/70 backdrop-blur-xl border-b border-black/5'>
-
-                <div className='flex items-center gap-2'>
-
-                    <div className='w-7 h-7 rounded-lg bg-[#0A0A0A] flex items-center justify-center shadow-[0_4px_14px_rgba(0,0,0,0.18)]'>
-                        <GiArtificialHive size={15} color='white' /></div>
-
-                    <span className='font-extrabold text-base tracking-tight text-[#0A0A0A]'>FresherAI</span>
+            <div className="min-h-screen overflow-x-hidden bg-[#fbfcff] text-slate-950">
+                <div className="pointer-events-none fixed inset-0 -z-0 overflow-hidden">
+                    <div className="absolute left-1/2 top-[-18rem] h-[34rem] w-[48rem] -translate-x-1/2 rounded-full bg-violet-300/20 blur-3xl" />
+                    <div className="absolute right-[-12rem] top-[24rem] h-[30rem] w-[30rem] rounded-full bg-cyan-300/15 blur-3xl" />
                 </div>
 
-                <motion.button
-                    onClick={() => setShowLogin(true)}
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.97 }}
-                    className='bg-[#0A0A0A]/80 backdrop-blur-2xl text-white font-semibold border border-white/10 rounded-md px-3 py-1.5 text-xs cursor-pointer transition-all hover:border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.25)] flex items-center gap-2'>
-                    Log In <FaArrowRight />
-
-                </motion.button>
-
-            </motion.nav>
-
-            {/* main area */}
-            <section className='relative pt-20 pb-14 overflow-hidden bg-[#F8F9FA]'>
-                <div className='absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-black/[0.04] blur-[90px] pointer-events-none' />
-
-                <div className='max-w-4xl mx-auto px-6 text-center'>
-                    <motion.div
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.05 }}
-                        className='inline-flex items-center px-3 py-1.5 rounded-full border border-black/15 bg-black/5 text-black/70 text-xs font-medium mb-4'>
-                        Multi-Agent Interview Platform
-
-                    </motion.div>
-
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.55, delay: 0.12 }}
-                        className='text-3xl md:text-5xl font-extrabold leading-[1.1] tracking-tight mb-4 text-[#0A0A0A] [text-shadow:0_4px_24px_rgba(0,0,0,0.12)]'>
-                        Job Interviews<br />
-                        <span className="text-black/30">
-                            Don't Have to Suck
-                        </span><br />
-                        Anymore!
-                    </motion.h1>
-
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.55, delay: 0.2 }}
-                        className='text-black/45 text-sm leading-relaxed max-w-md mx-auto mb-6 [text-shadow:0_2px_10px_rgba(0,0,0,0.06)]'>
-                        Fresher.AI is an innovative AI-powered interview preparation platform
-                        designed to help job seekers excel in their interviews.
-                    </motion.p>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.55, delay: 0.28 }}>
-
-                        <motion.button
-                            onClick={() => setShowLogin(true)}
-                            whileHover={{ scale: 1.05, boxShadow: "0 0 36px rgba(0,0,0,0.18)" }}
-                            whileTap={{ scale: 0.97 }}
-                            className='relative  gap-2 overflow-hidden bg-[#0A0A0A]/80 backdrop-blur-2xl text-white font-bold px-5 py-2.5 rounded-lg text-xs cursor-pointer border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all hover:border-white/20'>
-                            <span className='flex items-center justify-center gap-2'> Get Started For Free <FaArrowRight /></span>
-                            <span className='absolute inset-0 bg-gradient-to-br from-white/[0.1] via-transparent to-transparent pointer-events-none rounded-lg' />
-                        </motion.button>
-                    </motion.div>
-                </div>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    whileHover={{ y: -10, scale: 1.02 }}
-                    transition={{ duration: 0.7, delay: 0.3 }}
-                    className='mt-10 rounded-lg overflow-hidden  shadow-[0_0_60px_rgba(0,0,0,0.06)] max-w-2xl mx-auto'>
-
-                    <img src={dashboard} alt='dashboard img' className='w-full h-auto object-cover block ' />
-
-                </motion.div>
-
-            </section>
-
-            {/* Agents */}
-            <section className='py-16 bg-[#F8F9FA]'>
-                <div className='max-w-5xl mx-auto px-6'>
-                    <div className='text-center mb-10'>
-                        <div className='inline-flex items-center px-3 py-1.5 rounded-full border border-black/15 bg-black/5 text-black/70 text-xs font-medium mb-4'>
-                            AI Powered Agents
-                        </div>
-
-                        <h2 className='text-2xl md:text-4xl font-extrabold tracking-tight text-[#0A0A0A] [text-shadow:0_4px_20px_rgba(0,0,0,0.1)]'>
-                            Specialized Agents For
-                            <span className="block text-black/30">
-                                Every Interview Stage
-                            </span>
-                        </h2>
-
-                        <p className='text-black/40 text-sm max-w-2xl mx-auto mt-4 leading-relaxed'>
-                            Fresher.AI combines multiple AI agents that work together
-                            to help you build your resume, practice interviews,
-                            receive detailed feedback, and prepare confidently for your next interview.
-                        </p>
+                <motion.nav
+                    initial={{ y: -24, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.55, delay: 0.15 }}
+                    className="relative z-20 mx-auto flex h-[76px] w-full max-w-7xl items-center justify-between px-5 sm:px-8"
+                >
+                    <div className="flex items-center gap-2.5">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-white shadow-[0_8px_24px_rgba(15,23,42,0.18)]"><GiArtificialHive size={19} /></span>
+                        <span className="text-base font-extrabold tracking-tight">FresherAI</span>
                     </div>
-                    <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-4'>
-                        {
-                            [
-                                {
-                                    icon: <FiFileText />,
-                                    title: "Resume Analyzer",
-                                    desc: "Analyze your resume, improve profile strength, and maximize interview opportunities.",
-                                },
-                                {
-                                    icon: <FiMic />,
-                                    title: "Interview Agent",
-                                    desc: "Conduct realistic HR, Technical and Coding interviews with AI-powered simulations.",
-                                },
-                                {
-                                    icon: <FiBarChart2 />,
-                                    title: "Feedback Agent",
-                                    desc: "Get detailed answer analysis, scoring reports and improvement recommendations.",
-                                },
-                            ].map((agent, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, y: 24 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.45, delay: i * 0.08 }}
-                                    whileHover={{ y: -10, scale: 1.02 }}
-                                    className='group relative overflow-hidden bg-[#0A0A0A]/80 backdrop-blur-2xl border border-white/10 rounded-2xl p-5 shadow-[0_8px_32px_rgba(0,0,0,0.25)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)] hover:border-white/20 transition-all'>
-                                        <div className='absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none'/>
+                    <button type="button" onClick={user ? handleLogout : openLogin} className="inline-flex items-center gap-2 rounded-full border border-slate-900/10 bg-white/75 px-4 py-2 text-xs font-semibold text-slate-800 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-violet-300 hover:text-violet-700">
+                        {user ? "Log Out" : "Log In"}
+                        {user ? <FiLogOut size={13} /> : <FaArrowRight size={11} />}
+                    </button>
+                </motion.nav>
 
-                                        <div className='absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500'/>
+                <main className="relative z-10">
+                    <section className="mx-auto flex max-w-5xl flex-col items-center px-5 pb-14 pt-16 text-center sm:px-8 sm:pt-24">
+                        <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.25 }} className="relative mb-7 inline-flex items-center text-sm font-medium text-violet-700">
+                            <span className="absolute -bottom-5 left-1/2 h-5 w-32 -translate-x-1/2 rounded-[50%] border-b-2 border-violet-300/70" />
+                            <span className="mr-2 text-xl text-violet-400">↝</span>
+                            From Resume to Dream Job
+                        </motion.div>
+                        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.33 }} className="max-w-4xl text-[clamp(3rem,8vw,6.7rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-slate-950">
+                            Practice Interviews.<br />
+                            <span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent">Get Hired.</span>
+                        </motion.h1>
+                        <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.46 }} className="mt-7 max-w-xl text-sm leading-7 text-slate-500 sm:text-base">
+                            AI-powered interviews and resume analysis to help you prepare better, build confidence, and land your dream job.
+                        </motion.p>
+                    </section>
 
-                                        <div className='relative'>
-                                            <div className='w-11 h-11 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center text-white text-lg mb-4 shadow-inner'>{agent.icon}</div>
+                    <HomepageFeatureCards onInterview={() => openFeature("/interview")} onResume={() => openFeature("/scorer")} />
 
-                                            <h2 className='text-base font-bold mb-2 text-white'>{agent.title}</h2>
-
-                                            <p className='text-white/45 text-xs leading-relaxed'>{agent.desc}</p>
+                    {user && (
+                        <section className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
+                            <div className="relative overflow-hidden rounded-[28px] bg-[#0d0d16] p-5 text-white shadow-[0_24px_80px_rgba(15,23,42,0.18)] sm:p-7">
+                                <div className="absolute -right-24 -top-28 h-72 w-72 rounded-full bg-violet-600/20 blur-3xl" />
+                                <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+                                    <div>
+                                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">Your workspace</p>
+                                        <div className="mt-3 flex items-center gap-3">
+                                            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-yellow-300/20 bg-yellow-400/10">
+                                                <GiTwoCoins className="text-yellow-300" size={22} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-white/45">Available interview coins</p>
+                                                <p className="text-2xl font-bold">{user.interviewCoin ?? 0}</p>
+                                            </div>
                                         </div>
+                                        <p className="mt-4 max-w-xl text-sm leading-6 text-white/50">
+                                            Use your coins for AI interviews and resume analysis. Your balance updates automatically after each feature.
+                                        </p>
+                                    </div>
 
-                                </motion.div>
-                            ))
-                        }
+                                    <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[470px]">
+                                        <button type="button" onClick={() => openFeature("/interview")} className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.06] px-3.5 py-3 text-left transition hover:border-violet-300/40 hover:bg-white/10">
+                                            <span className="flex items-center gap-2"><FiMic className="text-violet-300" size={15} /><span><span className="block text-xs font-semibold">AI Interview</span><span className="block text-[10px] text-white/40">50 coins</span></span></span>
+                                            <FiArrowUpRight className="text-white/35" size={15} />
+                                        </button>
+                                        <button type="button" onClick={() => openFeature("/scorer")} className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.06] px-3.5 py-3 text-left transition hover:border-cyan-300/40 hover:bg-white/10">
+                                            <span className="flex items-center gap-2"><FiStar className="text-cyan-300" size={15} /><span><span className="block text-xs font-semibold">Resume Scorer</span><span className="block text-[10px] text-white/40">10 coins</span></span></span>
+                                            <FiArrowUpRight className="text-white/35" size={15} />
+                                        </button>
+                                        <button type="button" onClick={() => navigate("/billing")} className="flex items-center justify-between rounded-xl bg-white px-3.5 py-3 text-left text-slate-950 transition hover:bg-violet-100">
+                                            <span className="flex items-center gap-2"><FiPlus size={15} /><span><span className="block text-xs font-semibold">Buy Coins</span><span className="block text-[10px] text-slate-500">Add more balance</span></span></span>
+                                            <FiArrowUpRight size={15} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    )}
+
+                    <section className="mx-auto grid max-w-5xl gap-4 px-5 pb-20 sm:grid-cols-3 sm:px-8">
+                        {[
+                            { icon: FiMic, label: "Live interview practice", text: "Speak, answer, and improve with realistic AI feedback." },
+                            { icon: FiFileText, label: "Resume intelligence", text: "Turn your existing resume into a clearer interview advantage." },
+                            { icon: FiBarChart2, label: "Actionable feedback", text: "See what to strengthen before your next conversation." },
+                        ].map(({ icon: Icon, label, text }, index) => (
+                            <motion.div key={label} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }} className="rounded-2xl border border-slate-900/8 bg-white/60 p-5 shadow-[0_12px_40px_rgba(30,41,59,0.05)]">
+                                <Icon className="text-violet-600" size={18} />
+                                <h3 className="mt-4 text-sm font-semibold text-slate-900">{label}</h3>
+                                <p className="mt-2 text-xs leading-5 text-slate-500">{text}</p>
+                            </motion.div>
+                        ))}
+                    </section>
+                </main>
+
+                <footer className="relative z-10 border-t border-slate-900/8 bg-white/55 px-5 py-6 backdrop-blur sm:px-8">
+                    <div className="mx-auto flex max-w-7xl flex-col gap-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-center gap-2 font-semibold text-slate-800"><span className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-950 text-white"><GiArtificialHive size={13} /></span>FresherAI</div>
+                        <span>© 2026 FresherAI. All rights reserved.</span>
                     </div>
-                </div>
-            </section>
-
-            {showLogin && <LoginModel onClose={() => setShowLogin(false)} setUser={setUser} />}
-
-                <footer className='border-t border-black/7 py-6 text-center bg-white'>
-                <div className='flex items-center justify-center gap-2 mb-1.5'>
-                    <div className='w-5 h-5 rounded-md bg-[#0A0A0A] flex items-center justify-center'>
-                        <GiArtificialHive size={11} color='white'/>
-
-                    </div>
-                    <span className='font-bold text-xs text-[#0A0A0A]/70'>FresherAI</span>
-                </div>
-                <div className='text-black/50 text-xs'>
-                © {new Date().getFullYear()} Fresher.AI · All rights reserved
-                </div>
-
                 </footer>
-
 
             </div>
         </>

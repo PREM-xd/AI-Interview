@@ -14,6 +14,7 @@ import InterviewStart from './pages/InterviewStart'
 import InterviewPage from './pages/InterviewPage'
 import InterviewReport from './pages/InterviewReport'
 import Billing from './pages/Billing'
+import LoginPage from './pages/LoginPage'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from './utils/firebase'
 import api from './utils/axios'
@@ -26,40 +27,48 @@ function App() {
 
 
   useEffect(()=>{
+    let cancelled = false
 
-    const getUser = async () => {
+    const syncUser = async (firebaseUser) => {
       try {
-        const firebaseUser = await new Promise((resolve) => {
-          const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            unsubscribe()
-            resolve(currentUser)
-          })
-        })
-
         if (firebaseUser) {
           const token = await firebaseUser.getIdToken()
           const response = await api.post("/api/auth/login", { token })
-          setUser(response?.data?.user)
+          const authenticatedUser = response?.data?.user
 
-          if (sessionStorage.getItem("freshai-login-pending") === "true") {
-            sessionStorage.removeItem("freshai-login-pending")
-            navigate("/dashboard", { replace: true })
+          if (!authenticatedUser) {
+            throw new Error("The auth service did not return a user")
+          }
+
+          if (!cancelled) {
+            setUser(authenticatedUser)
+
+            if (sessionStorage.getItem("freshai-login-pending") === "true") {
+              const pendingPath = sessionStorage.getItem("freshai-login-pending-path") || "/"
+              sessionStorage.removeItem("freshai-login-pending")
+              sessionStorage.removeItem("freshai-login-pending-path")
+              navigate(pendingPath, { replace: true })
+            }
           }
         } else {
           const data = await getCurrentUser()
-          setUser(data?.user)
+          if (!cancelled) setUser(data?.user || null)
         }
       } catch (error) {
         console.error("Authentication failed", error)
-        setUser(null)
+        if (!cancelled) setUser(null)
       } finally {
-        setLoading(false)
+        if (!cancelled) setLoading(false)
       }
     }
 
-    getUser()
+    const unsubscribe = onAuthStateChanged(auth, syncUser)
 
-  },[])
+    return () => {
+      cancelled = true
+      unsubscribe()
+    }
+  },[navigate])
 
   useEffect(()=>{
 
@@ -87,7 +96,11 @@ function App() {
    <>
 
    <Routes>
-    <Route path='/' element={<Home setUser={setUser}/>} />
+    <Route path='/' element={<Home setUser={setUser} user={user}/>} />
+
+      <Route path='/login' element={
+        user ? <Navigate to="/" replace /> : <LoginPage setUser={setUser}/>
+      } />
 
     <Route path='/dashboard' element={
       user ? <Dashboard user={user} setUser={setUser}/> 
