@@ -3,7 +3,6 @@ import { motion } from "motion/react"
 import { GiArtificialHive } from "react-icons/gi"
 import maleVideo from "../assets/male-ai.mp4"
 import femaleVideo from "../assets/female-ai.mp4"
-import dashboardImage from "../assets/image.png"
 
 const TICKER_ITEMS = [
     { title: "AI Interview®", detail: "Practice with purpose", brand: true },
@@ -16,18 +15,30 @@ function Ticker() {
     return (
         <div className="relative z-20 flex min-w-max items-center !text-black [text-shadow:0_1px_2px_rgba(255,255,255,0.22)]">
             {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, index) => (
-                <div
+                <motion.div
                     key={`${item.title}-${index}`}
-                    className="flex items-center gap-8 px-8 text-left sm:gap-12 sm:px-14"
+                    whileHover={{
+                        y: [0, -5, 4, -3, 5, -2, 0],
+                        scaleY: [1, 1.08, 0.94, 1.06, 0.96, 1.03, 1],
+                        borderColor: ["transparent", "#111111", "#111111", "#111111", "#111111", "#111111", "transparent"],
+                    }}
+                    transition={{
+                        y: { duration: 0.8, ease: "easeInOut" },
+                        scaleY: { duration: 0.8, ease: "easeInOut" },
+                        borderColor: { duration: 0.8, ease: "easeInOut" },
+                    }}
+                    className="relative z-10 flex items-center gap-8 rounded-[45%] border-y-2 border-transparent bg-[#ff432d] px-8 text-left sm:gap-12 sm:px-14"
                 >
-                    <span className="whitespace-nowrap text-[clamp(1.3rem,2.6vw,2.25rem)] font-bold tracking-[-0.035em]">
+                    <motion.span
+                        className="whitespace-nowrap text-[clamp(1.3rem,2.6vw,2.25rem)] font-bold tracking-[-0.035em]"
+                    >
                         {item.title}
-                    </span>
+                    </motion.span>
                     <span className="max-w-40 text-[11px] font-semibold leading-4 opacity-100 sm:max-w-52 sm:text-[13px]">
                         {item.detail}
                     </span>
                     <span className="text-lg font-bold opacity-100">✳</span>
-                </div>
+                </motion.div>
             ))}
         </div>
     )
@@ -38,6 +49,7 @@ function HomepageIntro() {
         typeof window !== "undefined" && sessionStorage.getItem("freshai-intro-seen") !== "true"
     ))
     const [stage, setStage] = useState("logo")
+    const [tickerMoving, setTickerMoving] = useState(false)
     const [exiting, setExiting] = useState(false)
     const [reducedMotion, setReducedMotion] = useState(() => (
         typeof window !== "undefined" &&
@@ -48,8 +60,10 @@ function HomepageIntro() {
         if (!visible) return undefined
 
         const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
-        const tickerTimer = window.setTimeout(() => setStage("ticker"), 1350)
-        const sceneTimer = window.setTimeout(() => setStage("scene"), 2750)
+        const shrinkTimer = window.setTimeout(() => setStage("shrink"), 1350)
+        const tickerTimer = window.setTimeout(() => setStage("ticker"), 2150)
+        const tickerMoveTimer = window.setTimeout(() => setTickerMoving(true), 3050)
+        const sceneTimer = window.setTimeout(() => setStage("scene"), 3450)
         const handlePreferenceChange = (event) => setReducedMotion(event.matches)
         const enter = () => setExiting(true)
 
@@ -64,7 +78,9 @@ function HomepageIntro() {
         mediaQuery.addEventListener?.("change", handlePreferenceChange)
 
         return () => {
+            window.clearTimeout(shrinkTimer)
             window.clearTimeout(tickerTimer)
+            window.clearTimeout(tickerMoveTimer)
             window.clearTimeout(sceneTimer)
             window.removeEventListener("wheel", enter)
             window.removeEventListener("touchmove", enter)
@@ -82,9 +98,17 @@ function HomepageIntro() {
 
     return (
         <motion.div
-            initial={{ y: 0 }}
-            animate={{ y: exiting ? "-100%" : 0 }}
-            transition={{ duration: 1.1, ease: [0.76, 0, 0.24, 1] }}
+            initial={{ y: 0, opacity: 1, scale: 1 }}
+            animate={{
+                y: exiting ? "-100%" : 0,
+                opacity: exiting ? 0 : 1,
+                scale: exiting ? 0.98 : 1,
+            }}
+            transition={{
+                y: { duration: 1.1, ease: [0.76, 0, 0.24, 1] },
+                opacity: { duration: 0.85, ease: "easeInOut" },
+                scale: { duration: 1.1, ease: [0.76, 0, 0.24, 1] },
+            }}
             onClick={() => setExiting(true)}
             onAnimationComplete={() => {
                 if (exiting) finish()
@@ -132,53 +156,41 @@ function HomepageIntro() {
                             transition={{ delay: 0.65, duration: 1.2 }}
                             className="absolute inset-0 h-full w-full object-cover mix-blend-screen"
                         />
-                        <motion.img
-                            src={dashboardImage}
-                            alt=""
-                            initial={{ opacity: 0, scale: 1.1, x: 80 }}
-                            animate={{ opacity: 0.18, scale: 1, x: 0 }}
-                            transition={{ duration: 1.3, ease: "easeOut" }}
-                            className="absolute right-[5%] top-[12%] hidden h-[38%] w-[38%] rounded-2xl object-cover shadow-2xl lg:block"
-                        />
                         <div className="absolute inset-0 bg-[#11151c]/55" />
                     </>
                 )}
 
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.85 }}
-                    animate={{
-                        opacity: stage === "logo" ? 1 : 0,
-                        scale: stage === "logo" ? 1 : 0.2,
-                        y: stage === "logo" ? 0 : 1,
-                    }}
-                    transition={{
-                        opacity: { duration: 0.95 },
-                        scale: { duration: 0.95, ease: [0.76, 0, 0.24, 1] },
-                        y: { duration: 0.95, ease: [0.76, 0, 0.24, 1] },
-                    }}
-                    className={`relative z-20 whitespace-nowrap text-[clamp(3.5rem,11vw,9rem)] font-medium tracking-[-0.09em] ${
-                        stage === "scene" ? "text-white" : "text-black"
-                    }`}
-                >
-                    AI Interview<span className="align-top text-[0.3em]">®</span>
-                </motion.div>
+                {(stage === "logo" || stage === "shrink") && (
+                    <motion.div
+                        animate={{ scale: stage === "logo" ? 1 : 0.42 }}
+                        transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+                        className="relative z-[60] whitespace-nowrap text-[clamp(3.5rem,11vw,9rem)] font-bold tracking-[-0.09em] text-black"
+                    >
+                        AI Interview<span className="align-top text-[0.3em]">®</span>
+                    </motion.div>
+                )}
 
-                {stage !== "logo" && (
+                {(stage === "ticker" || stage === "scene") && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className={`absolute left-1/2 top-1/2 z-50 w-[140%] -translate-x-1/2 -translate-y-1/2 overflow-hidden border-y ${
-                            stage === "scene"
-                                ? "border-[#ff432d] bg-[#ff432d]"
-                                : "border-black/15"
+                            "border-[#ff432d] bg-[#ff432d]"
                         }`}
                     >
                         <motion.div
                             initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, x: ["-25%", "0%"] }}
+                            animate={{
+                                opacity: 1,
+                                x: tickerMoving
+                                    ? ["calc(50vw - 13rem)", "-25%"]
+                                    : "calc(50vw - 13rem)",
+                            }}
                             transition={{
                                 opacity: { duration: 0.3, ease: "linear" },
-                                x: { duration: 16, repeat: Infinity, ease: "linear" },
+                                x: tickerMoving
+                                    ? { duration: 16, repeat: Infinity, ease: "linear" }
+                                    : { duration: 1.05, ease: [0.76, 0, 0.24, 1] },
                             }}
                         >
                             <Ticker />
