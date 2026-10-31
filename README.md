@@ -1,6 +1,10 @@
 # AI Interview Platform
 
 An AI-powered platform that helps users prepare for job interviews through personalized interview practice, resume analysis, and AI-generated feedback.
+<img width="2880" height="1624" alt="image" src="https://github.com/user-attachments/assets/09f4a40f-a379-433c-a622-5fd9400b86c3" />
+<img width="2880" height="1612" alt="image" src="https://github.com/user-attachments/assets/9d5d3a0b-74fe-43b1-84ae-8fa020bd5872" />
+<img width="2880" height="1620" alt="image" src="https://github.com/user-attachments/assets/4ff461e0-8d56-4363-b978-28f09d996aa2" />
+<img width="2880" height="1546" alt="image" src="https://github.com/user-attachments/assets/91af894e-90e6-4a43-bc4f-08e9df4735b9" />
 
 ## ✨ Features
 
