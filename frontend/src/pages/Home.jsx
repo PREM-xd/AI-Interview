@@ -77,6 +77,40 @@ function Home({ user, setUser }) {
                         style={parallax.enabled ? { x: parallax.foregroundX, y: parallax.foregroundY } : undefined}
                         className="absolute right-[-12rem] top-[24rem] h-[30rem] w-[30rem] rounded-full bg-cyan-300/15 blur-3xl"
                     />
+                    <motion.div
+                        style={{
+                            ...(parallax.enabled ? { x: parallax.backgroundX, y: parallax.backgroundY } : {}),
+                            transformPerspective: 1200,
+                        }}
+                        className="absolute left-1/2 top-[18%] h-[28rem] w-[42rem] -translate-x-1/2 [transform-style:preserve-3d]"
+                    >
+                        <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 42, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 rounded-[50%] border border-violet-200/20 shadow-[0_0_35px_rgba(167,139,250,0.12)] [transform:rotateX(68deg)]"
+                        >
+                            <span className="absolute left-1/2 top-[-5px] h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-violet-200 shadow-[0_0_18px_6px_rgba(196,181,253,0.55)]" />
+                        </motion.div>
+                        <motion.div
+                            animate={{ rotate: -360 }}
+                            transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-[2.4rem_-2.5rem] rounded-[50%] border border-cyan-200/15 [transform:rotateX(68deg)_rotateY(18deg)]"
+                        >
+                            <span className="absolute right-[14%] top-[-4px] h-2 w-2 rounded-full bg-cyan-200 shadow-[0_0_16px_5px_rgba(103,232,249,0.45)]" />
+                        </motion.div>
+                        <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 58, repeat: Infinity, ease: "linear", delay: 1 }}
+                            className="absolute inset-[5.5rem_3rem] rounded-[50%] border border-amber-200/15 [transform:rotateX(68deg)_rotateY(-22deg)]"
+                        >
+                            <span className="absolute bottom-[-4px] left-[18%] h-1.5 w-1.5 rounded-full bg-amber-200 shadow-[0_0_14px_4px_rgba(253,230,138,0.4)]" />
+                        </motion.div>
+                        <motion.div
+                            animate={{ scale: [0.92, 1.08, 0.92], opacity: [0.15, 0.3, 0.15] }}
+                            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-300/15 blur-2xl"
+                        />
+                    </motion.div>
                     {parallax.enabled && (
                         <motion.div
                             style={{ x: parallax.foregroundX, y: parallax.foregroundY }}
