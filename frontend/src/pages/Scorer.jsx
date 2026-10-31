@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setResume } from '../redux/resumeSlice'
 import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts"
 import { deductCoins } from '../apis/user.api'
+import featureBackground from '../assets/New Eromancer en Steam.jpg'
 const ScoreRing = ({ score }) => {
     const color = score >= 75 ? "#7c3aed" : score >= 50 ? "#f59e0b" : "#ef4444";
     return (
@@ -75,6 +76,13 @@ const Navbar = ({ label }) => {
     )
 }
 
+const FeaturePageBackground = () => (
+    <>
+        <div className='pointer-events-none fixed inset-[-8%] z-0 bg-cover bg-center opacity-75' style={{ backgroundImage: `url("${featureBackground}")` }} />
+        <div className='pointer-events-none fixed inset-0 z-0 bg-slate-950/60' />
+    </>
+)
+
 function Scorer({ user, setUser }) {
     const [file, setFile] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -119,10 +127,11 @@ function Scorer({ user, setUser }) {
     // scorer section
 
     if (resume) return (
-        <div className='min-h-screen bg-white text-[#0A0A0A]'>
+        <div className='relative min-h-screen overflow-hidden bg-[#07111f] text-[#0A0A0A]'>
+            <FeaturePageBackground />
             <Navbar label="Resume Scorer" />
 
-            <section className='max-w-6xl mx-auto px-3 pt-18 sm:pt-20 pb-8 space-y-3.5'>
+            <section className='relative z-10 max-w-6xl mx-auto px-3 pt-18 sm:pt-20 pb-8 space-y-3.5'>
                 {/* header */}
                 <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                     <div>
@@ -257,11 +266,12 @@ function Scorer({ user, setUser }) {
     )
     //upload section
     return (
-        <div className='min-h-screen bg-white text-[#0A0A0A]'>
+        <div className='relative min-h-screen overflow-hidden bg-[#07111f] text-[#0A0A0A]'>
+            <FeaturePageBackground />
             <Navbar label="Resume Scorer" />
 
 
-            <section className='flex min-h-screen items-center justify-center px-3 pt-18 pb-6'>
+            <section className='relative z-10 flex min-h-screen items-center justify-center px-3 pt-18 pb-6'>
 
                 <motion.div
                     initial={{ y: 60, opacity: 0 }}

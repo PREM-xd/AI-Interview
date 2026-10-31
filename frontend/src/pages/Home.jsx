@@ -90,7 +90,7 @@ function Home({ user, setUser }) {
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.55, delay: 0.15 }}
                     style={parallax.enabled ? { x: parallax.backgroundX, y: parallax.backgroundY } : undefined}
-                    className="relative z-20 mx-auto flex h-[76px] w-full max-w-7xl items-center justify-between px-5 text-white sm:px-8"
+                    className="relative z-20 flex h-[76px] w-full items-center justify-between px-5 text-white sm:px-8"
                 >
                     <div className="flex items-center gap-2.5">
                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-white shadow-[0_8px_24px_rgba(15,23,42,0.18)]"><GiArtificialHive size={19} /></span>
@@ -113,8 +113,8 @@ function Home({ user, setUser }) {
                             From Resume to Dream Job
                         </motion.div>
                         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.33 }} className="max-w-4xl text-[clamp(3rem,8vw,6.7rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.45)]">
-                            Practice Interviews.<br />
-                            <span className="bg-gradient-to-r from-violet-300 via-cyan-300 to-amber-200 bg-clip-text text-transparent">Get Hired.</span>
+                            Practice Interviews#<br />
+                            <span className="bg-gradient-to-r from-violet-300 via-cyan-300 to-amber-200 bg-clip-text text-transparent">Get Hired#</span>
                         </motion.h1>
                         <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.46 }} className="mt-7 max-w-xl text-sm leading-7 text-white/80 drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)] sm:text-base">
                             AI-powered interviews and resume analysis to help you prepare better, build confidence, and land your dream job.
@@ -202,7 +202,7 @@ function Home({ user, setUser }) {
                 <footer className="relative z-10 border-t border-white/15 bg-slate-950/55 px-5 py-6 text-white/65 backdrop-blur-md sm:px-8">
                     <motion.div
                         style={parallax.enabled ? { x: parallax.backgroundX, y: parallax.backgroundY } : undefined}
-                        className="mx-auto flex max-w-7xl flex-col gap-3 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between"
+                        className="flex w-full flex-col gap-3 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between"
                     >
                         <div className="flex items-center gap-2 font-semibold text-white/80"><span className="flex h-6 w-6 items-center justify-center rounded-lg bg-white/10 text-white"><GiArtificialHive size={13} /></span>AI Interview</div>
                         <span>© 2026 AI Interview. All rights reserved.</span>

@@ -6,6 +6,7 @@ import { GiTwoCoins } from 'react-icons/gi'
 import PricingCard from '../components/PricingCard'
 import api from '../utils/axios'
 import { useNavigate } from 'react-router-dom'
+import featureBackground from '../assets/New Eromancer en Steam.jpg'
 
 const plan = [
     {
@@ -95,20 +96,22 @@ function Billing({ user, setUser }) {
         }
     }
     return (
-        <div className='min-h-screen bg-white text-[#0A0A0A]'>
+        <div className='relative min-h-screen overflow-hidden bg-[#07111f] text-white'>
+            <div className='pointer-events-none fixed inset-[-8%] z-0 bg-cover bg-center opacity-75' style={{ backgroundImage: `url("${featureBackground}")` }} />
+            <div className='pointer-events-none fixed inset-0 z-0 bg-slate-950/60' />
             <motion.nav
                 initial={{ y: -60, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
-                className='sticky top-0 z-20 border-b border-black/8 bg-white/80 backdrop-blur-xl'>
+                className='sticky top-0 z-20 border-b border-white/15 bg-slate-950/60 text-white backdrop-blur-xl'>
                 <div className='mx-auto flex h-12 max-w-7xl items-center justify-between px-3 sm:px-5'>
                     <div onClick={() => navigate("/dashboard")}
                         className='flex cursor-pointer items-center gap-1.5'>
-                        <span className='text-sm font-extrabold sm:text-base text-[#0A0A0A]'>AI Interview</span>
-                        <span className='hidden rounded bg-black/5 px-1.5 py-0.5 text-[10px] text-black/50 sm:block'>Interview Coins</span>
+                        <span className='text-sm font-extrabold sm:text-base text-white'>AI Interview</span>
+                        <span className='hidden rounded bg-white/10 px-1.5 py-0.5 text-[10px] text-white/60 sm:block'>Interview Coins</span>
                     </div>
 
-                    <button onClick={() => setShowMenu(!showMenu)} className='flex h-8 w-8 items-center justify-center rounded-lg border border-black/15 text-black/60 transition hover:border-black/35 hover:text-[#0A0A0A]'>
+                    <button onClick={() => setShowMenu(!showMenu)} className='flex h-8 w-8 items-center justify-center rounded-lg border border-white/20 text-white/70 transition hover:border-white/40 hover:text-white'>
                         {showMenu ? <FiX size={16} /> : <FiMenu size={16} />}
 
 
@@ -171,13 +174,13 @@ function Billing({ user, setUser }) {
 
             </motion.nav>
 
-            <div className='mx-auto max-w-4xl px-4 py-6'>
+            <div className='relative z-10 mx-auto max-w-4xl px-4 py-6'>
 
                 <div className='text-center'>
-                    <h1 className="text-3xl font-bold text-[#0A0A0A]">
+                    <h1 className="text-3xl font-bold text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.5)]">
                         Interview Coins
                     </h1>
-                    <p className="mt-2 text-sm text-black/45">
+                    <p className="mt-2 text-sm text-white/75">
                         Use coins for Resume Analysis and AI Interviews.
                     </p>
                 </div>

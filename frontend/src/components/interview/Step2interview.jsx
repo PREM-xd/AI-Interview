@@ -8,6 +8,7 @@ import CodeEditor from './CodeEditor'
 import Timer from './Timer'
 import { submitAnswer } from '../../apis/interview.api'
 import { useNavigate } from 'react-router-dom'
+import featureBackground from '../../assets/New Eromancer en Steam.jpg'
 function Step2interview({ interviewData, user }) {
 const navigate = useNavigate()
   // ── State ──
@@ -383,7 +384,9 @@ const navigate = useNavigate()
 
 
   return (
-    <div className='min-h-screen bg-white flex items-center justify-center p-3 sm:p-5'>
+    <div className='relative min-h-screen overflow-hidden bg-[#07111f] flex items-center justify-center p-3 sm:p-5'>
+      <div className='pointer-events-none absolute inset-[-8%] z-0 bg-cover bg-center opacity-75' style={{ backgroundImage: `url("${featureBackground}")` }} />
+      <div className='pointer-events-none absolute inset-0 z-0 bg-slate-950/60' />
 
 
       {codeOpen && <CodeEditor onClose={()=>setCodeOpen(false)} onSubmitCode={handleSubmitCode} />}
@@ -392,7 +395,7 @@ const navigate = useNavigate()
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className='w-full max-w-5xl bg-[#0E1016] border border-white/10 rounded-2xl sm:rounded-[24px] overflow-hidden shadow-[0_0_60px_rgba(255,255,255,.03)] grid lg:grid-cols-[36%_64%]'>
+        className='relative z-10 w-full max-w-5xl bg-[#0E1016] border border-white/10 rounded-2xl sm:rounded-[24px] overflow-hidden shadow-[0_0_60px_rgba(255,255,255,.03)] grid lg:grid-cols-[36%_64%]'>
         {/* left */}
 
         <div className='flex flex-col border-b lg:border-b-0 lg:border-r border-white/8 p-4 sm:p-5 gap-3'>
