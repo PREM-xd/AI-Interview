@@ -53,9 +53,22 @@ function Home({ user, setUser }) {
                             ...(parallax.enabled ? { x: parallax.backgroundX, y: parallax.backgroundY } : {}),
                             backgroundImage: `url("${landingBackground}")`,
                         }}
-                        animate={{ scale: [1.08, 1.11, 1.08], opacity: [0.86, 0.94, 0.86] }}
-                        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute inset-[-5%] bg-cover bg-center bg-no-repeat"
+                        animate={{
+                            rotateY: [0, -7, 0, 7, 0],
+                            x: ["-2.5%", "2.5%", "-2.5%"],
+                            y: ["0%", "-1.2%", "0%"],
+                            scale: [1.2, 1.24, 1.2],
+                            opacity: [0.86, 0.94, 0.86],
+                            transformPerspective: 1800,
+                        }}
+                        transition={{
+                            rotateY: { duration: 52, repeat: Infinity, ease: "easeInOut" },
+                            x: { duration: 52, repeat: Infinity, ease: "easeInOut" },
+                            y: { duration: 52, repeat: Infinity, ease: "easeInOut" },
+                            scale: { duration: 24, repeat: Infinity, ease: "easeInOut" },
+                            opacity: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+                        }}
+                        className="absolute inset-[-12%] bg-cover bg-center bg-no-repeat"
                     />
                     <div className="absolute inset-0 bg-[#07111f]/20" />
                     <motion.div
