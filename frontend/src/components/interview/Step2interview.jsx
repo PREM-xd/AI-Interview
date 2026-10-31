@@ -42,6 +42,8 @@ const navigate = useNavigate()
   const micOnRef = useRef(false);
   const isAIPlayingRef = useRef(false);
   const committedAnswerRef = useRef("");
+  const recognitionActiveRef = useRef(false);
+  const restartRecognitionRef = useRef(null);
 
 
   const videoSource = voiceGender === "female" ? femaleVideo : maleVideo
@@ -78,31 +80,43 @@ const navigate = useNavigate()
       setSpeechError("");
     }
     rec.onstart = () => {
+      recognitionActiveRef.current = true;
       setIsListening(true);
       setSpeechError("");
     };
     rec.onerror = (event) => {
+      recognitionActiveRef.current = false;
       setIsListening(false);
       if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+        micOnRef.current = false;
+        setMicOn(false);
         setSpeechError("Microphone permission is required for speech-to-text.");
       } else if (event.error !== "aborted") {
         setSpeechError("Speech recognition stopped. Try the microphone again.");
       }
     };
     rec.onend = () => {
+      recognitionActiveRef.current = false;
       setIsListening(false);
       if (micOnRef.current && !isAIPlayingRef.current) {
-        try {
-          rec.start();
-        } catch {
-          // The browser may still be closing the previous recognition session.
-        }
+        window.clearTimeout(restartRecognitionRef.current);
+        restartRecognitionRef.current = window.setTimeout(() => {
+          if (!micOnRef.current || isAIPlayingRef.current || recognitionActiveRef.current) return;
+          try {
+            rec.start();
+          } catch (error) {
+            if (error.name !== "InvalidStateError") {
+              setSpeechError("Could not restart speech recognition. Try the microphone again.");
+            }
+          }
+        }, 100);
       }
     };
     recognitionRef.current = rec
 
     return () => {
       micOnRef.current = false;
+      window.clearTimeout(restartRecognitionRef.current);
       rec.onend = null;
       rec.stop();
       recognitionRef.current = null;
@@ -111,7 +125,7 @@ const navigate = useNavigate()
 
 
   const startMic = ()=>{
-    if (!recognitionRef.current) return;
+    if (!recognitionRef.current || recognitionActiveRef.current || isAIPlayingRef.current) return;
     setSpeechError("");
     try {
       recognitionRef.current.start();
@@ -122,11 +136,13 @@ const navigate = useNavigate()
     }
   }
   const stopMic = ()=>{
+    window.clearTimeout(restartRecognitionRef.current);
     try {
       recognitionRef.current?.stop()
     } catch {
       // Recognition may already be stopped by the browser.
     }
+    recognitionActiveRef.current = false;
     setInterimTranscript("");
     setIsListening(false);
   }

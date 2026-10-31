@@ -72,7 +72,7 @@ function HomepageIntro() {
                             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-black shadow-[0_0_42px_rgba(255,255,255,0.18)]">
                                 <GiArtificialHive size={26} />
                             </span>
-                            <span className="text-2xl font-extrabold tracking-[-0.04em]">FreshAI</span>
+                            <span className="text-2xl font-extrabold tracking-[-0.04em]">AI Interview</span>
                         </motion.div>
                     )}
 
@@ -95,10 +95,10 @@ function HomepageIntro() {
                             initial={{ opacity: 0, y: 24, scale: 0.94, filter: "blur(10px)" }}
                             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
                             exit={{ opacity: 0, scale: 0.94, filter: "blur(10px)" }}
-                            transition={{ duration: 0.6, ease: "easeOut" }}
+                            transition={{ duration: 0.9, ease: "easeOut" }}
                             className="max-w-4xl text-center text-[clamp(2.5rem,8vw,6.5rem)] font-semibold leading-[0.95] tracking-[-0.06em]"
                         >
-                            Get Better<span className="text-white/35">.</span> Get Hired<span className="text-white/35">.</span>
+                            Get Better<span className="text-white/35">#</span> Get Hired<span className="text-white/35">#</span>
                         </motion.h1>
                     )}
 

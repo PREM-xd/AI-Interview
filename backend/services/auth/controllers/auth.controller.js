@@ -102,6 +102,7 @@ export const logout = async (req, res) => {
 
   }
 };
+
 export const useInterviewCoins = async (req, res) => {
   try {
 const sessionId = req.cookies?.session;

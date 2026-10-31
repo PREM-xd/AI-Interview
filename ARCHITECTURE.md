@@ -1,8 +1,8 @@
-# FresherAI Architecture
+# AI Interview Architecture
 
 ## 1. One-minute explanation
 
-FresherAI is a React-based AI interview platform backed by Node.js and Express microservices. The browser talks only to the API Gateway. The gateway validates the session stored in Redis, forwards authenticated requests to the correct service, and adds the authenticated user id to internal requests.
+AI Interview is a React-based AI interview platform backed by Node.js and Express microservices. The browser talks only to the API Gateway. The gateway validates the session stored in Redis, forwards authenticated requests to the correct service, and adds the authenticated user id to internal requests.
 
 Authentication is handled by Firebase Authentication on the client and Firebase Admin in the Auth Service. MongoDB stores durable business data. Redis stores login sessions and short-lived service caches. Resume analysis uses PDF extraction plus a LangChain LLM agent. Interview creation, answer evaluation, and final reporting use LangGraph to route work between interview, feedback, and summary agents.
 

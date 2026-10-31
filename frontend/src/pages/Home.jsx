@@ -58,7 +58,7 @@ function Home({ user, setUser }) {
                 >
                     <div className="flex items-center gap-2.5">
                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-white shadow-[0_8px_24px_rgba(15,23,42,0.18)]"><GiArtificialHive size={19} /></span>
-                        <span className="text-base font-extrabold tracking-tight">FresherAI</span>
+                        <span className="text-base font-extrabold tracking-tight">AI Interview</span>
                     </div>
                     <button type="button" onClick={user ? handleLogout : openLogin} className="inline-flex items-center gap-2 rounded-full border border-slate-900/10 bg-white/75 px-4 py-2 text-xs font-semibold text-slate-800 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-violet-300 hover:text-violet-700">
                         {user ? "Log Out" : "Log In"}
@@ -141,8 +141,8 @@ function Home({ user, setUser }) {
 
                 <footer className="relative z-10 border-t border-slate-900/8 bg-white/55 px-5 py-6 backdrop-blur sm:px-8">
                     <div className="mx-auto flex max-w-7xl flex-col gap-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-center gap-2 font-semibold text-slate-800"><span className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-950 text-white"><GiArtificialHive size={13} /></span>FresherAI</div>
-                        <span>© 2026 FresherAI. All rights reserved.</span>
+                        <div className="flex items-center gap-2 font-semibold text-slate-800"><span className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-950 text-white"><GiArtificialHive size={13} /></span>AI Interview</div>
+                        <span>© 2026 AI Interview. All rights reserved.</span>
                     </div>
                 </footer>
 
