@@ -1,5 +1,6 @@
-import { motion } from "motion/react"
-import { FiArrowRight, FiArrowUpRight, FiBarChart2, FiCheckCircle, FiMessageSquare, FiTarget, FiUploadCloud, FiZap } from "react-icons/fi"
+import { useState } from "react"
+import { motion, useMotionValue, useSpring, useTransform } from "motion/react"
+import { FiArrowRight, FiArrowUpRight, FiBarChart2, FiCheckCircle, FiMessageSquare, FiUploadCloud, FiZap } from "react-icons/fi"
 
 const benefits = [
     "Personalized Questions",
@@ -59,7 +60,27 @@ function ResumeMockup() {
     )
 }
 
-function HomepageFeatureCards({ onInterview, onResume }) {
+function HomepageFeatureCards({ onInterview, onResume, parallax }) {
+    const [hoveredCard, setHoveredCard] = useState(null)
+    const pointerX = useMotionValue(0)
+    const pointerY = useMotionValue(0)
+    const rotateX = useSpring(useTransform(pointerY, [-1, 1], [4, -4]), { damping: 20, stiffness: 180, mass: 0.35 })
+    const rotateY = useSpring(useTransform(pointerX, [-1, 1], [-5, 5]), { damping: 20, stiffness: 180, mass: 0.35 })
+    const supportsPointer = typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches
+
+    const handlePointerMove = (event) => {
+        if (!supportsPointer) return
+        const bounds = event.currentTarget.getBoundingClientRect()
+        pointerX.set(((event.clientX - bounds.left) / bounds.width - 0.5) * 2)
+        pointerY.set(((event.clientY - bounds.top) / bounds.height - 0.5) * 2)
+    }
+
+    const resetTilt = () => {
+        pointerX.set(0)
+        pointerY.set(0)
+        setHoveredCard(null)
+    }
+
     return (
         <section className="mx-auto grid w-full max-w-6xl gap-5 px-4 pb-20 sm:px-6 lg:grid-cols-2">
             <motion.article
@@ -67,11 +88,21 @@ function HomepageFeatureCards({ onInterview, onResume }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 whileHover={{ y: -6 }}
+                style={supportsPointer && hoveredCard === "interview" ? { rotateX, rotateY, transformPerspective: 1000 } : undefined}
+                onPointerEnter={() => setHoveredCard("interview")}
+                onPointerMove={handlePointerMove}
+                onPointerLeave={resetTilt}
                 transition={{ duration: 0.5 }}
                 className="relative overflow-hidden rounded-[28px] border border-violet-300/20 bg-[#0d0d16] p-5 text-white shadow-[0_24px_80px_rgba(49,46,129,0.18)] sm:p-7"
             >
-                <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-violet-600/20 blur-3xl" />
-                <div className="absolute bottom-0 left-1/3 h-40 w-56 bg-cyan-500/10 blur-3xl" />
+                <motion.div
+                    style={parallax?.enabled ? { x: parallax.foregroundX, y: parallax.foregroundY } : undefined}
+                    className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-violet-600/20 blur-3xl"
+                />
+                <motion.div
+                    style={parallax?.enabled ? { x: parallax.backgroundX, y: parallax.backgroundY } : undefined}
+                    className="absolute bottom-0 left-1/3 h-40 w-56 bg-cyan-500/10 blur-3xl"
+                />
                 <div className="relative">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-xs font-semibold text-white/70"><FiMessageSquare className="text-violet-300" size={16} /> AI Interview</div>
@@ -92,10 +123,17 @@ function HomepageFeatureCards({ onInterview, onResume }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 whileHover={{ y: -6 }}
+                style={supportsPointer && hoveredCard === "resume" ? { rotateX, rotateY, transformPerspective: 1000 } : undefined}
+                onPointerEnter={() => setHoveredCard("resume")}
+                onPointerMove={handlePointerMove}
+                onPointerLeave={resetTilt}
                 transition={{ duration: 0.5, delay: 0.08 }}
                 className="relative overflow-hidden rounded-[28px] border border-cyan-200 bg-gradient-to-br from-white via-cyan-50/60 to-violet-50/70 p-5 text-slate-950 shadow-[0_24px_80px_rgba(34,211,238,0.12)] sm:p-7"
             >
-                <div className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-cyan-300/30 blur-3xl" />
+                <motion.div
+                    style={parallax?.enabled ? { x: parallax.foregroundX, y: parallax.foregroundY } : undefined}
+                    className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-cyan-300/30 blur-3xl"
+                />
                 <div className="relative">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-xs font-semibold text-slate-700"><FiBarChart2 className="text-violet-600" size={16} /> Resume Analyzer</div>
