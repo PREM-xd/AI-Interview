@@ -223,11 +223,11 @@ function Home({ user, setUser }) {
                                     x: index === 1 ? parallax.backgroundX : parallax.foregroundX,
                                     y: index === 1 ? parallax.backgroundY : parallax.foregroundY,
                                 } : undefined}
-                                className="rounded-2xl border border-slate-900/8 bg-white/60 p-5 shadow-[0_12px_40px_rgba(30,41,59,0.05)]"
+                                className="rounded-2xl border border-white/20 bg-slate-950/72 p-5 text-white shadow-[0_16px_50px_rgba(3,7,18,0.28)] backdrop-blur-md"
                             >
-                                <Icon className="text-violet-600" size={18} />
-                                <h3 className="mt-4 text-sm font-semibold text-slate-900">{label}</h3>
-                                <p className="mt-2 text-xs leading-5 text-slate-500">{text}</p>
+                                <Icon className="text-violet-300" size={18} />
+                                <h3 className="mt-4 text-sm font-semibold text-white">{label}</h3>
+                                <p className="mt-2 text-xs leading-5 text-white/70">{text}</p>
                             </motion.div>
                         ))}
                     </section>

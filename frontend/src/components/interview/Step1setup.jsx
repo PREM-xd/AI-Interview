@@ -105,7 +105,7 @@ function Step1setup({ user, setUser }) {
                 <div className='p-5 sm:p-7 border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col justify-start gap-4'>
 
                     <div>
-                        <div onClick={() => navigate("/dashboard")} className='inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 cursor-pointer'>
+                        <div onClick={() => navigate("/")} className='inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 cursor-pointer'>
                             <FiArrowLeft size={12} />
                             <span className='text-xs text-zinc-300'>Back</span>
                         </div>

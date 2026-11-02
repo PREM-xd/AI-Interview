@@ -61,12 +61,12 @@ const Navbar = ({ label }) => {
             initial={{ y: -60, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className='fixed inset-x-0 top-0 z-20 border-b border-black/8 bg-white/80 backdrop-blur-xl'>
+            className='fixed inset-x-0 top-0 z-20 border-b border-white/15 bg-slate-950/60 text-white backdrop-blur-xl'>
             <div className='mx-auto flex h-12 max-w-7xl items-center justify-start px-3 sm:px-5'>
                 <div onClick={() => navigate("/")}
                     className='flex cursor-pointer items-center gap-1.5'>
-                    <span className='text-sm font-extrabold sm:text-base text-[#0A0A0A]'>AI Interview</span>
-                    <span className='hidden rounded bg-black/5 px-1.5 py-0.5 text-[10px] text-black/50 sm:block'>{label}</span>
+                    <span className='text-sm font-extrabold sm:text-base text-white'>AI Interview</span>
+                    <span className='hidden rounded bg-white/10 px-1.5 py-0.5 text-[10px] text-white/60 sm:block'>{label}</span>
                 </div>
 
             </div>
